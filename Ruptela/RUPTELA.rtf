@@ -1,0 +1,271 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf600
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33740\viewh20040\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \
+Public Sub DataArrivalRuptela(packet, strRemoteHostIP As String, lngRemotePort As Long, strProtocol As String)\
+  \
+    Dim strPacketLength  As String\
+    Dim strIMEI          As String\
+    Dim strCommandID     As String\
+    Dim strPayLoadData   As String\
+    Dim strCRC16         As String\
+    Dim intIndice        As Integer\
+    \
+    Dim strRecordsLeft   As String\
+    Dim intNumberRecords As Integer\
+    Dim strData          As String\
+    Dim intRecordNumber  As Integer\
+    Dim strCommand       As String\
+    Dim mensajeHEX       As String\
+    Dim strPlaca         As String\
+    Dim strID            As String\
+    \
+    Dim MyHexPacketLength\
+    Dim MyHexCommand\
+    Dim MyHexACK\
+    Dim MyHexCRC16\
+    \
+    Dim j                As Integer\
+    Dim i                As Integer\
+    \
+    Dim strPacket        As String\
+        \
+    On Error GoTo ErrorHandler\
+    Err.Clear\
+\
+\
+    ConvStrEnHex strPacketLength, Hex(packet(0))\
+    ConvStrEnHex strPacketLength, Hex(packet(1))\
+\
+    For intIndice = 2 To 9\
+        ConvStrEnHex strIMEI, Hex(packet(intIndice))\
+    Next intIndice\
+    strIMEI = ConvHexEnDec2(strIMEI)\
+    \
+    ConvStrEnHex strCommandID, Hex(packet(10))\
+    \
+    For intIndice = 11 To UBound(packet) - 2\
+        ConvStrEnHex strPayLoadData, Hex(packet(intIndice))\
+    Next intIndice\
+    \
+    For intIndice = 0 To UBound(packet)\
+        ConvStrEnHex mensajeHEX, Hex(packet(intIndice))\
+    Next intIndice\
+\
+    strID = GetIDByIP(strRemoteHostIP)\
+    UpdateIPV2 strID, strRemoteHostIP, lngRemotePort\
+\
+    ConvStrEnHex strCRC16, Hex(packet(UBound(packet) - 1))\
+    ConvStrEnHex strCRC16, Hex(packet(UBound(packet)))\
+        \
+    Select Case strCommandID\
+    \
+           Case "01"\
+    \
+                 strRecordsLeft = Mid(strPayLoadData, 1, 2)\
+                 intNumberRecords = Val(Mid(strPayLoadData, 3, 2))\
+                 strData = Mid(strPayLoadData, 5, Len(strPayLoadData))\
+\
+                 For intIndice = 1 To intNumberRecords\
+                     DescomponerMensajeRuptela strData, intIndice, strRemoteHostIP, lngRemotePort, strIMEI, mensajeHEX\
+                 Next intIndice\
+\
+'                 MyHexPacketLength = Hex(2)\
+'                 MyHexCommand = Hex(100)\
+'                 MyHexACK = Hex(1)\
+'                 MyHexCRC16 = Hex(5052)\
+'\
+'                 MyHexPacketLength = Format(MyHexPacketLength, "0000")\
+'                 MyHexCommand = Format(MyHexCommand, "00")\
+'                 MyHexACK = Format(MyHexACK, "00")\
+'                 MyHexCRC16 = Format(MyHexCRC16, "0000")\
+                 \
+                 strCommand = Chr(0) + Chr(2) + Chr(100) + Chr(1) + Chr(19) + Chr(188) + Chr(0)\
+                 \
+                 Select Case strProtocol\
+                        Case "UDP"\
+                                 With MainWindow.udpRuptelaTx\
+                                      .RemoteHost = strRemoteHostIP\
+                                      .RemotePort = lngRemotePort\
+                                 End With\
+                                 MainWindow.udpRuptelaTx.SendData strCommand\
+                                 \
+                        Case "TCP"\
+                                    intIndice = FindSocketRuptela(strRemoteHostIP)\
+                                    MainWindow.tcpRuptela(intIndice).SendData strCommand  'enviar comando ruptela 'RUPTEL\
+                 End Select\
+                 \
+           Case "07"\
+                            \
+                 For intIndice = 1 To Len(strPayLoadData)\
+                     strData = strData + Chr(ConvHexEnDec(Mid(strPayLoadData, intIndice, 2)))\
+                     intIndice = intIndice + 1\
+                     \
+                 Next intIndice\
+                 DescomponerMensajeRuptelaASCII strData, intIndice, strRemoteHostIP, lngRemotePort, strIMEI, mensajeHEX\
+                 strCommand = Chr(0) + Chr(2) + Chr(100) + Chr(1) + Chr(19) + Chr(188) + Chr(0)\
+                 \
+                 Select Case strProtocol\
+                        Case "UDP"\
+                                 With MainWindow.udpRuptelaTx\
+                                      .RemoteHost = strRemoteHostIP\
+                                      .RemotePort = lngRemotePort\
+                                 End With\
+                                 MainWindow.udpRuptelaTx.SendData strCommand\
+                                 \
+                        Case "TCP"\
+                                intIndice = FindSocketRuptela(strRemoteHostIP)\
+                                MainWindow.tcpRuptela(intIndice).SendData strCommand  'enviar comando ruptela 'RUPTELA\
+                 End Select\
+                 \
+   \
+            Case "0F"\
+                    strCommand = Chr(0) + Chr(2) + Chr(115) + Chr(1) + Chr(203) + Chr(37) + Chr(0)\
+                    Select Case strProtocol\
+            \
+                            Case "UDP"\
+                                 With MainWindow.udpRuptelaTx\
+                                      .RemoteHost = strRemoteHostIP\
+                                      .RemotePort = lngRemotePort\
+                                 End With\
+                                 MainWindow.udpRuptelaTx.SendData strCommand\
+                                 \
+                            Case "TCP"\
+                                intIndice = FindSocketRuptela(strRemoteHostIP)\
+                                MainWindow.tcpRuptela(intIndice).SendData strCommand  'enviar comando ruptela 'RUPTELA\
+                    End Select\
+       End Select\
+\
+    Exit Sub\
+ErrorHandler:\
+        \
+        ErrorHandlerMensajeFuncion "DataArrivalRuptela", Err\
+        Err.Clear\
+End Sub\
+\
+\
+Public Function DescomponerMensajeRuptelaASCII(ByRef strData As String, ByVal intRecordNumber As Integer, ByVal strRemoteHostIP As String, ByVal lngRemotePort As Long, ByVal strIMEI As String, mensajeHEX As String)\
+\
+   Dim strLongitude                 As String\
+   Dim strLatitude                  As String\
+   Dim strSatellites                As String\
+   Dim strTimeStamp                      As String\
+   Dim strEventID                   As String\
+        \
+   Dim strHDOP                      As String\
+   Dim strTaipPacket                As String\
+   Dim strPlaca                     As String\
+   Dim strID                        As String\
+      \
+   Dim intMes                      As Integer\
+   Dim intDia                      As Integer\
+   Dim intA\'f1o                      As Integer\
+   Dim intGPSWeek                  As Integer\
+   Dim intDayWeek                  As Integer\
+\
+   Dim intHora                     As Long\
+   Dim intMinutos                  As Long\
+   Dim lngTiempoEnSegundos         As Long\
+   \
+   Dim dblXCoord                   As Double\
+   Dim dblYCoord                   As Double\
+   Dim intHeading                  As Long\
+   Dim intSatelliteView            As Integer\
+   Dim intSpeed                    As Integer\
+   \
+   Dim intIndice                   As Integer\
+   Dim intTamano                   As Integer\
+   Dim i                           As Integer\
+   Dim ArrayData\
+      \
+    On Error GoTo ErrorHandler\
+    Err.Clear\
+    \
+    'strIMEI = ConvHexEnDec(strIMEI)\
+    strID = GetTaipIDByIMEI(strIMEI)\
+    strID = GetIDByIP(strRemoteHostIP)\
+    strPlaca = GetPlacaByIP(strRemoteHostIP)\
+        \
+    ArrayData = Split(strData, ", ")\
+    If UBound(ArrayData) = 7 Then\
+        strTimeStamp = ArrayData(0)\
+        strLongitude = ArrayData(2)\
+        strLongitude = Mid(ArrayData(2), 6)\
+        strLatitude = Mid(ArrayData(1), 5)\
+        strHDOP = Mid(ArrayData(6), 6)\
+        strEventID = Mid(strData, 45, 2)\
+        \
+        dblXCoord = CDbl(strLongitude)\
+        dblYCoord = CDbl(strLatitude)\
+    \
+        \
+    '    If strEventID = "130" Then\
+         strEventID = "00"\
+    '    End If\
+                \
+        intA\'f1o = Val(Mid(ArrayData(0), 1, 4))\
+        intMes = Val(Mid(ArrayData(0), 6, 2))\
+        intDia = Val(Mid(ArrayData(0), 9, 2))\
+        GPSWeekFrom1980AndDayWeek intGPSWeek, intDayWeek, intA\'f1o, intMes, intDia\
+        \
+        intHora = CInt(Mid(ArrayData(0), 12, 2))\
+        intMinutos = CInt(Mid(ArrayData(0), 15, 2))\
+        lngTiempoEnSegundos = CLng(intHora) * 3600 + CLng(intMinutos) * 60\
+        \
+        \
+        intSatelliteView = CInt(strHDOP) / 10\
+        If intSatelliteView = 0 Then\
+            intSatelliteView = 1\
+        Else\
+            If intSatelliteView < 11 Then\
+               intSatelliteView = 2\
+            Else\
+                intSatelliteView = 1\
+            End If\
+        End If\
+            \
+        strTaipPacket = ">REV" + Format(strEventID, "00")\
+        strTaipPacket = strTaipPacket + Format(intGPSWeek, "0000")\
+        strTaipPacket = strTaipPacket + Format(intDayWeek, "0")\
+        strTaipPacket = strTaipPacket + Format(lngTiempoEnSegundos, "00000")\
+        strTaipPacket = strTaipPacket + ConvCoordenadaConSignoAStringV2(dblYCoord, 2, 8)\
+        strTaipPacket = strTaipPacket + ConvCoordenadaConSignoAStringV2(dblXCoord, 3, 9)\
+        strTaipPacket = strTaipPacket + Format(intSpeed, "000")\
+        strTaipPacket = strTaipPacket + Format(intHeading, "000")\
+        strTaipPacket = strTaipPacket + "0" 'Resolver el significado de este valor\
+        strTaipPacket = strTaipPacket + Format(intSatelliteView, "0")\
+        strTaipPacket = strTaipPacket + ";ID=" + Format(strID, "0000") + "<"\
+        SaveTCPReport strPlaca, strRemoteHostIP, strTaipPacket, mensajeHEX\
+    Else\
+       ContMesg = ContMesg + 1\
+       PrintTaipListView strData, strPlaca, "", 0, 0, "", Now()\
+       SaveTCPReport strPlaca, strRemoteHostIP, strData, mensajeHEX\
+    End If\
+\
+    DescomponerMensajeTAIP strTaipPacket, strPlaca, "DescomponerMensajeRuptela", "DescomponerMensajeRuptela"\
+    \
+    UpdateIPV2 strID, strRemoteHostIP, lngRemotePort\
+Exit Function\
+ErrorHandler:\
+        ErrorHandlerMensajeFuncion "DescomponerMensajeRuptelaASCII", Err\
+        Err.Clear\
+End Function\
+\
+00710003124D0AE6F8F707323031382D31302D30392031303A33392C206C61742E20362E323236313836362C206C6F6E672E202D37352E353630393738332C20616C742E20313730302E372C207361742E2031362C206469722E203236332E38302C2068646F702038302C2073746174652033C8ED\
+	113	10.42.122.95	09/10/2018 05:39:56 a.m.	LAQ180	>REV002022238340+0622619-0755609800000002;ID=0095<	00710003124D0AE6F8F707323031382D31302D30392031303A33392C206C61742E20362E323236313836362C206C6F6E672E202D37352E353630393738332C20616C742E20313730302E372C207361742E2031362C206469722E203236332E38302C2068646F702038302C2073746174652033C8ED\
+\
+	1	10.42.122.53	09/10/2018 05:37:12 a.m.	STY857	>REV092022238229+0615085-07563575004338020007406365;ID=0053<	003D000314F82AD0F1710100015BBC84D50000D2EAE6A603AA8BC6410E83F411000607090605011B0E02000300AD010400021D38D21E0F3001410071031D00FEDC\
+\
+	224872	10.42.122.138	15/10/2018 07:50:05 a.m.	SNV100	>REV082023146204+0649138-07441033019051020066607524;ID=0138<	003D0003124D0AE5C1D90100015BC48CFC0000D3A5E27C03DE817704F7140A0F001E06080605011B1B02000300AD010400021D70221E0F22014103F859A400E237\
+\
+	224869	10.42.122.19	15/10/2018 07:49:54 a.m.	SNV654	>REV002023146140+0618318-0756528300000002;ID=0019<	00710003124D0AE9C65407323031382D31302D31352031323A34392C206C61742E20362E313833313736362C206C6F6E672E202D37352E363532383238332C20616C742E20313930352E382C207361742E2031332C206469722E203232332E39302C2068646F702037302C20737461746520336356\
+\
+\
+	224862	10.42.122.132	15/10/2018 07:49:50 a.m.	TMZ669	>REV002023146140+0890237-0763805400000002;ID=0132<	006D000314F82B0AF10F07323031382D31302D31352031323A34392C206C61742E20382E393032333730302C206C6F6E672E202D37362E333830353430302C20616C742E20372E392C207361742E2031372C206469722E2037352E36302C2068646F702036302C2073746174652033AF91\
+\
+\
+}

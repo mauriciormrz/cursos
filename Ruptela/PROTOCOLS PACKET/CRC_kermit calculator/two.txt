@@ -1,0 +1,2 @@
+Packet length = 134 Bytes
+CRC16 Kermit = 0x403b

@@ -1,0 +1,45 @@
+RAW - DATA ------------------------------------------------------
+007900000b1a2a5585c30100024e9c036900000f101733208ff45e07b31b570a001009090605011b1a020003001c01ad01021d338e16000002960000601a41014bc16d004e9c038400000f104fdf20900d20075103b00a001308090605011b1a020003001c01ad01021d33b116000002960000601a41014bc1ea0028f9
+RAW DATA END ----------------------------------------------------
+
+PACKET PARSING --------------------------------------------------
+
+Packet Lenght - 00 79 (HEX) 121 (dec)
+Imei - 00000b1a2a5585c3 (HEX) 12207007303107 (DEC)
+Command - 01 (HEX) 1 (dec) --- Records
+RECORDS PARSING
+Record Left flag - 00 (HEX) 0 (dec)
+Number of records - 02 (HEX) 2 (dec)
+
+FIRST RECORD INFO 
+Unix Timestamp - 4e9c0369 (HEX) 1318847337 (DEC)  "Mon, 17 Oct 2011 10:28:57 GMT"
+Timestamp Extension - 00 (HEX) 0 (DEC)
+Priority - 00 (HEX) 0 (DEC)
+Logitude - 0f101733 (HEX) 252712755 (DEC) need to be divided by 10 000 000
+Latitude - 208ff45e (HEX) 546305118 (DEC) need to be divided by 10 000 000
+Altitude - 07b3 (HEX) 1971 (DEC) need to be divided by 10
+Angle - 1b57 (HEX) 6999 (DEC) need to be divided by 100
+Satelites - 0a (HEX) 10 (DEC)
+Speed - 0010 (HEX) 16 (DEC)
+HDOP - 09 (HEX) 9 (DEC) need to be divided by 10
+IO data cause record - 09 (HEX) 9 (DEC)
+Number 1 byte IO - 06 (HEX) 6 (DEC)
+1 byte IO - ID 05 (HEX) 05 (DEC) VALUE 01 (HEX) 01 (DEC)
+1 byte IO - ID 1b (HEX) 27 (DEC) VALUE 1a (HEX) 26 (DEC)
+1 byte IO - ID 02 (HEX) 02 (DEC) VALUE 00 (HEX) 00 (DEC)
+1 byte IO - ID 03 (HEX) 03 (DEC) VALUE 00 (HEX) 00 (DEC)
+1 byte IO - ID 1c (HEX) 28 (DEC) VALUE 01 (HEX) 01 (DEC)
+1 byte IO - ID ad (HEX) 173 (DEC) VALUE 01 (HEX) 01 (DEC)
+Number 2 byte IO - 02 (HEX) 2 (DEC)
+2 byte IO - ID 1d (HEX) 29 (DEC) VALUE 338e (HEX) 13198 (DEC)
+2 byte IO - ID 16 (HEX) 22 (DEC) VALUE 0000 (HEX) 0 (DEC)
+Number 4 byte IO - 02 (HEX) 2 (DEC)
+4 byte IO - ID 96 (HEX) 150 (DEC) VALUE 0000601a (HEX) 24602 (DEC)
+4 byte IO - ID 41 (HEX) 65 (DEC) VALUE 014bc16d (HEX) 21741933 (DEC)
+Number 8 byte IO - 00 (HEX) 0 (DEC)
+
+SECOND RECORD - 4e9c038400000f104fdf20900d20075103b00a001308090605011b1a020003001c01ad01021d33b116000002960000601a41014bc1ea00
+
+CRC -  28f9 (HEX) 10489 (DEC)
+PACKET PARSING END ------------------------------------------------
+

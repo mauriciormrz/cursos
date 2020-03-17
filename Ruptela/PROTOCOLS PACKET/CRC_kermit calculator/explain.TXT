@@ -1,0 +1,8 @@
+-----------------------------------------
+1. one.txt - hex string (input)
+-----------------------------------------
+2. configParser.jar - executable file
+-----------------------------------------
+3. two.txt - CRC16 Kermit answer (output)
+
+

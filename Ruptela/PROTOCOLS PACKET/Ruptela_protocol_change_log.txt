@@ -1,0 +1,73 @@
+=====================================================================================
+Change log for FM protocols document
+=====================================================================================
+
+Date			Version			Description
+=============== =============== =====================================================
+2014-07-31		1.13			Updated: Identification string for 4th generation FM. 
+=============== =============== =====================================================
+2014-08-12		1.14			Updated: Transparent Channel Times stamp field addded. 
+=============== =============== =====================================================
+2014-09-02		1.15			Updated: Delrecords sms command deletes records from internal flash memory only.
+=============== =============== =====================================================
+2014-09-15		1.16			Updated: Server communication Tacho command 11 data flow example corrected.
+=============== =============== =====================================================
+2014-09-30		1.17			Updated: Record example incorrect CRC example fixed.
+=============== =============== =====================================================
+2014-10-07		1.18			Added: Generate accident records command.
+=============== =============== =====================================================
+2014-10-08		1.19			Added: Weighting system command (32);
+								Updated: SMS caninfo modified.
+=============== =============== =====================================================
+2014-10-13		1.20			Added: SMS cansinfo;
+								Updated: SMS caninfo modified;
+								Update:	smard card ack updated.
+=============== =============== =====================================================
+2014-11-03		1.21			Updated: Tunnel Channel payload length set to 1005;
+=============== =============== =====================================================
+2014-12-04		1.22			Added: SETIO IO command;
+=============== =============== =====================================================
+2015-01-05		1.23			Added: Dual Tunnel Channel;
+=============== =============== =====================================================
+2015-01-26		1.25			Updated: Dual Tunnel Channel;
+								Updated: SMS via GPRS example;
+=============== =============== =====================================================
+2015-01-27		1.26			Updated: Caninfo, Cansinfo SMS;
+=============== =============== =====================================================
+2015-02-11		1.27			Updated: Weighting system;
+=============== =============== =====================================================
+2015-02-11		1.28			Updated: SMS message: getAPN;
+								Updated: Dual Tunnel Channel;
+								Updated: Logo changed;
+=============== =============== =====================================================
+2015-03-09		1.29			Added: Extended protocol description;
+=============== =============== =====================================================
+2015-03-12		1.30			Updated: Timestamp extension single records limit;
+=============== =============== =====================================================
+2015-04-10		1.31			Updated: DTC command 109 example;
+								Updated: Tunnel Channel command 14 example;
+=============== =============== =====================================================
+2015-05-04		1.32			Added: SD logging command (34/134);
+=============== =============== =====================================================
+2015-06-15		1.33			Updated: Transparent channel example;
+=============== =============== =====================================================
+2015-07-20		1.34			Added: SMS message: webcoords – Google maps hyperlink with coordinates;
+								Added: SMS message: setiotime – set output for temporary period;
+=============== =============== =====================================================
+2015-07-20		1.35			Added: SMS message: Banned - temporary banned operators;
+=============== =============== =====================================================
+2015-09-08		1.36			Added: SMS message: Imei - get IMEI number;
+=============== =============== =====================================================
+2015-09-08		1.37			Edited: extended records example;
+=============== =============== =====================================================
+2015-10-02		1.40			Updated: FW update protocol flowchart;
+=============== =============== =====================================================
+2015-11-12		1.41			Edited: Virtual odometer 106 command;
+								Added: Supported SMS commands table;
+								Added: lastchange SMS, SMS during critical process;
+								Added: Record sending without GPS;
+								Added: Configuration password over GPRS workflow;
+								Added: Description of setcfg, getcfg, setioparam and getioparam commands;
+=============== =============== =====================================================
+2015-11-12		1.42			Edited: Corrected minor gramatical errors
+=============== =============== =====================================================

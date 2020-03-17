@@ -1,0 +1,20 @@
+---------------------------------------
+1. one.txt - config hex string should be placed in this file (input).
+---------------------------------------
+2. configParser.jar - executable file.
+---------------------------------------
+3. two.txt - parsed config file (output):
+
+ Packet length 		- hex number
+ Packet ID 			- hex number
+ Parameter count 	- hex number
+ Parameter ID 		- hex number
+ Parameter Length:  - hex number
+ Parameter value 	- hex value 
+ 
+ All bytes are switched if needed (big endian -> little endian). Purpose: easy to interpretate when you do not need to switch bytes manually.
+---------------------------------------
+
+
+
+
